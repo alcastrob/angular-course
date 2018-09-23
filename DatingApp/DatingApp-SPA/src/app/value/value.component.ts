@@ -17,7 +17,8 @@ export class ValueComponent implements OnInit {
 
   getValues() {
     // Get returns an observable. We have to subscribe to it
-    this.http.get('http://localhost:5000/api/values').subscribe(response => {
+    this.http.get('http://localhost:5000/api/values').subscribe(
+      response => {
       this.values = response;
     }, error => {
       console.log(error);
