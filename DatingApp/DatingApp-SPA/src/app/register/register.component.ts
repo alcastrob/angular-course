@@ -7,7 +7,6 @@ import { AuthService } from '../_services/auth.service';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
-  @Input() valuesFromHome: any;
   @Output() cancelRegister = new EventEmitter();
   model: any = {};
 
@@ -28,5 +27,4 @@ export class RegisterComponent implements OnInit {
     this.cancelRegister.emit(false); // Can be anything
     console.log('canceled');
   }
-
 }
