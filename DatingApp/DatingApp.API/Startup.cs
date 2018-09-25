@@ -38,6 +38,7 @@ namespace DatingApp.API
                 x.UseSqlite(Configuration.GetConnectionString("DefaultConnection" )));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddCors();
+            services.AddTransient<Seed>();
             // services.AddSingleton //Create only one instance for the whole code and for all the requests
             services.AddScoped<IAuthRepository, AuthRepository>(); // Create one per request, but shared in all the code
             // services.AddTransient //Creates one instance for every request and every use inside the code
@@ -54,7 +55,7 @@ namespace DatingApp.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, Seed seed)
         {
             if (env.IsDevelopment())
             {
@@ -77,6 +78,7 @@ namespace DatingApp.API
             }
 
             //app.UseHttpsRedirection();
+            //seed.SeedUsers();
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseAuthentication();
             app.UseMvc();
