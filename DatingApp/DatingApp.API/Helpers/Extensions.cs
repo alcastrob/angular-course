@@ -14,7 +14,7 @@ namespace DatingApp.API.Helpers
 
         public static int CalculateAge(this DateTime theDateTime)
         {
-            return Convert.ToInt32((DateTime.Today - theDateTime).TotalDays / 365.25);
+            return Convert.ToInt32(Math.Floor((DateTime.Today - theDateTime).TotalDays / 365.25));
         }
     }
 }
