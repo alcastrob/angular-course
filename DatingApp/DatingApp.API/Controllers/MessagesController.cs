@@ -50,10 +50,22 @@ namespace DatingApp.API.Controllers
             var messagesFromRepo = await repository.GetMessagesForUser(messageParams);
             var messages = mapper.Map<IEnumerable<MessageToReturnDto>>(messagesFromRepo);
 
-            Response.AddPagination(messagesFromRepo.CurrentPage, messagesFromRepo.PageSize, 
+            Response.AddPagination(messagesFromRepo.CurrentPage, messagesFromRepo.PageSize,
                 messagesFromRepo.TotalCount, messagesFromRepo.TotalPages);
-            
+
             return Ok(messages);
+        }
+
+        [HttpGet("thread/{recipientId}")]
+        public async Task<IActionResult> GetMessagesThread(int userId, int recipientId)
+        {
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+                return Unauthorized();
+
+            var messageFromRepo = await repository.GetMessageThread(userId, recipientId);
+            var messageThread = mapper.Map<IEnumerable<MessageToReturnDto>>(messageFromRepo);
+
+            return Ok(messageThread);
         }
 
         [HttpPost]
@@ -74,7 +86,7 @@ namespace DatingApp.API.Controllers
             var messageToReturn = mapper.Map<MessageForCreationDto>(message);
 
             if (await repository.SaveAll())
-                return CreatedAtRoute("GetMessage", new {id = message.Id}, messageToReturn);
+                return CreatedAtRoute("GetMessage", new { id = message.Id }, messageToReturn);
 
             throw new System.Exception("Creating the message failed on save");
         }
