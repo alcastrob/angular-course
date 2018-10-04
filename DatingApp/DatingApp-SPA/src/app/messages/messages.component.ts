@@ -24,6 +24,7 @@ export class MessagesComponent implements OnInit {
     this.route.data = data['messages'].result;
     this.pagination = data['messages'].pagination;
     });
+    this.loadMessages();
   }
 
   loadMessages() {
