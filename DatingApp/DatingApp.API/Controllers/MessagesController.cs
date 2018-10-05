@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -90,7 +91,29 @@ namespace DatingApp.API.Controllers
                 return CreatedAtRoute("GetMessage", new { id = message.Id }, messageToReturn);
             }
 
-            throw new System.Exception("Creating the message failed on save");
+            throw new Exception("Creating the message failed on save");
+        }
+
+        [HttpPost("{id}")]
+        public async Task<IActionResult> DeleteMessage(int id, int userId)
+        {
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+                return Unauthorized();
+
+            var messageFromRepo = await repository.GetMessage(id);
+            if (messageFromRepo.SenderId == userId)
+                messageFromRepo.SenderDeleted = true;
+
+            if (messageFromRepo.RecipientId == userId)
+                messageFromRepo.RecipientDeleted = true;
+
+            if (messageFromRepo.SenderDeleted && messageFromRepo.RecipientDeleted)
+                repository.Delete(messageFromRepo);
+
+            if (await repository.SaveAll())
+                return NoContent();
+
+            throw new Exception("Error deleting the message");
         }
     }
 }
