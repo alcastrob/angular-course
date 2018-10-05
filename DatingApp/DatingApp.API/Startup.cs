@@ -62,6 +62,35 @@ namespace DatingApp.API
             services.AddScoped<LogUserActivity>();
         }
 
+        public void ConfigureDevelopmentServices(IServiceCollection services)
+        {
+            services.AddDbContext<DataContext>(x => 
+                x.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddJsonOptions(opt => { 
+                    opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                });
+            services.AddCors();
+            services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
+            services.AddAutoMapper();
+            services.AddTransient<Seed>();
+            // services.AddSingleton //Create only one instance for the whole code and for all the requests
+            services.AddScoped<IAuthRepository, AuthRepository>(); // Create one per request, but shared in all the code
+            // services.AddTransient //Creates one instance for every request and every use inside the code
+            services.AddScoped<IDatingRepository, DatingRepository>();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options => {
+                    options.TokenValidationParameters = new TokenValidationParameters{
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII
+                            .GetBytes(Configuration.GetSection("AppSettings:Token").Value)),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+                    };
+            });
+            services.AddScoped<LogUserActivity>();
+        }
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, Seed seed)
         {

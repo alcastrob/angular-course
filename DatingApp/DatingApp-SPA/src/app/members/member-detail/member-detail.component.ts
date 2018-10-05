@@ -55,7 +55,7 @@ export class MemberDetailComponent implements OnInit {
     return imageUrls;
   }
 
-  selectTab(tabId: number){
+  selectTab(tabId: number) {
     this.memberTabs.tabs[tabId].active = true;
   }
 }
