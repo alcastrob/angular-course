@@ -20,7 +20,6 @@ export class MessagesComponent implements OnInit {
     private route: ActivatedRoute, private alertify: AlertifyService) { }
 
   ngOnInit() {
-    debugger;
     this.route.data.subscribe(data => {
       this.route.data = data['messages'].result;
       this.pagination = data['messages'].pagination;
