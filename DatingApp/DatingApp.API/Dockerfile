@@ -14,5 +14,6 @@ RUN dotnet publish "DatingApp.API.csproj" -c Release -o /app
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
-EXPOSE 5000
+COPY DattingApp.db .
+EXPOSE 80
 ENTRYPOINT ["dotnet", "DatingApp.API.dll"]

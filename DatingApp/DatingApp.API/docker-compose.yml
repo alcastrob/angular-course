@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  datingapp:
+    # if there is a Dockerfile, use "build". Otherwise, use "image"
+    # directory containing the Dockerfile
+    build:
+      context: ./    
+    # these ports are visible to the host
+    ports:
+      - "80:80"
+    networks:
+      - networkName
+
+networks:
+  networkName:
+    driver: bridge
